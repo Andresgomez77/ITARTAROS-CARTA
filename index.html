@@ -24,7 +24,6 @@
       font-size: 1.4rem;
       font-weight: bold;
       border-bottom: 2px solid #ddd;
-      z-index: 10000;
     }
     header h1 {
       font-family: 'Times New Roman', Times, serif;
@@ -38,9 +37,10 @@
       align-items: center;
       gap: 1rem;
       margin: 1rem 0;
+      flex-wrap: wrap;
     }
     .btn {
-      padding: 0.6rem 1.2rem;
+      padding: 0.6rem 1rem;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
@@ -70,7 +70,7 @@
     /* Contenedor del PDF */
     #pdf-viewer {
       width: 100%;
-      height: 100vh;
+      height: auto;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -86,6 +86,29 @@
       box-shadow: 0 0 6px rgba(0,0,0,0.3);
       border-radius: 6px;
       background: white;
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      header {
+        font-size: 1.1rem;
+        padding: 0.8rem;
+      }
+      #controls {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .btn {
+        width: 80%;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+      }
+      #page-info {
+        font-size: 0.9rem;
+      }
+      canvas {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -123,7 +146,9 @@
     // Renderizar una página
     function renderPage(num) {
       pdfDoc.getPage(num).then(function(page) {
-        const scale = 1.3;
+        // Escala adaptativa: más pequeña en móviles
+        const isMobile = window.innerWidth <= 768;
+        const scale = isMobile ? 0.9 : 1.3;
         const viewport = page.getViewport({ scale });
 
         viewer.innerHTML = ""; // Limpiar antes de renderizar
@@ -163,6 +188,9 @@
       pdfDoc = pdf;
       renderPage(currentPage);
     });
+
+    // Re-renderizar al redimensionar pantalla
+    window.addEventListener("resize", () => renderPage(currentPage));
   </script>
 </body>
 </html>
