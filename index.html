@@ -1,238 +1,174 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ITARTAROS - Carta</title>
-    <link rel="icon" href="Mesa de trabajo 1.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="Mesa de trabajo 1.png" type="image/png">
+  <title>ITARTAROS</title>
 
-  <!-- Fuente -->
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 
   <style>
-    :root{
-      --header-bg-1: #fffaf3;
-      --header-bg-2: #f5e9d6;
-      --title-color: #2c2c2c;
-      --accent: #a32a29;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
+    body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background:#f7f7f7;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      color:#222;
+      background: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     /* ===== HEADER ===== */
-    header{
-      position:relative;
-      width:100%;
-      text-align:center;
-      padding: 70px 16px;
-      overflow:hidden;
-      background: linear-gradient(180deg, var(--header-bg-1), var(--header-bg-2));
-      border-bottom: 2px solid #ddd;
-    }
-
-    /* capa que contendrá el mosaico generado por JS */
-    .motif{
-      position:absolute;
-      inset:0;
-      display:grid;
-      grid-auto-rows: 120px;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 0;
-      z-index:1;
-      pointer-events: none;
-      /* INICIAL opacidad moderada; las imágenes individuales serán vívidas */
-      opacity: 0.85;
-    }
-    .motif img{
-      width: 70%;
-      height: auto;
-      margin: auto;
-      display:block;
-      opacity: 1; /* full color */
-      transition: transform 250ms ease;
-      will-change: transform;
-    }
-
-    /* Capa para asegurar legibilidad del texto (solo detrás del texto) */
-    .title-box{
-      position:relative;
-      z-index: 3;
-      display:inline-block;
-      background: rgba(255,255,255,0.92); /* casi blanco, pero permite ver el motivo */
-      padding: 12px 18px;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    }
-
-    header h1{
-      margin:0;
-      font-family: "Cinzel", serif;
-      font-size: 4rem;
-      color: var(--title-color);
-    }
-    header p{
-      margin:8px 0 0;
-      font-family: "Cinzel", serif;
-      font-size: 3rem;
-      color: var(--accent);
+    header {
       position: relative;
-      z-index: 3;
+      width: 100%;
+      height: 160px; /* altura reducida */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fffaf3;
+      overflow: hidden;
     }
 
-    /* controls & pdf */
-    #controls{
-      margin: 18px 0;
-      display:flex;
-      gap:1rem;
-      justify-content:center;
-      align-items:center;
-      flex-wrap:wrap;
-      z-index: 4;
+    /* ===== MOSAICO DINÁMICO ===== */
+    .mosaic {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      grid-auto-rows: 50px;
+      gap: 4px;
+      justify-items: center;
+      align-items: center;
+      opacity: 0.35;
+      z-index: 1;
     }
-    .btn{
-      padding:0.6rem 1rem;
-      border-radius:8px;
-      border:none;
-      font-weight:700;
-      cursor:pointer;
-    }
-    .btn-prev{ background:#009246; color:#fff; }
-    .btn-prev:hover{ background:#006f33; }
-    .btn-next{ background:#ce2b37; color:#fff; }
-    .btn-next:hover{ background:#a8232a; }
-    #page-info{ font-weight:700; color:#333; }
 
-    #pdf-viewer{
-      width:100%;
-      display:flex;
-      justify-content:center;
-      align-items:flex-start;
+    .mosaic img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .mosaic img:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    /* ===== CAJA DE TÍTULO ===== */
+    .title-box {
+      position: relative;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.92);
+      padding: 15px 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .title-box h1 {
+      font-family: "Cinzel", serif;
+      font-size: 1.6rem;
+      color: #2c2c2c;
+      margin: 0;
+    }
+
+    .title-box p {
+      font-family: "Cinzel", serif;
+      font-size: 0.95rem;
+      color: #a32a29;
+      margin: 8px 0 0;
+    }
+
+    /* ===== CONTROLES ===== */
+    #controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .btn-prev { background-color: #009246; color: white; }
+    .btn-prev:hover { background-color: #006f33; }
+    .btn-next { background-color: #ce2b37; color: white; }
+    .btn-next:hover { background-color: #a8232a; }
+
+    #page-info { font-weight: bold; color: #333; }
+
+    /* ===== PDF VIEWER ===== */
+    #pdf-viewer {
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+      background: #e0e0e0;
       padding: 1rem 0;
-      background:#e0e0e0;
-    }
-    canvas{
-      max-width:95%;
-      height:auto;
-      box-shadow:0 0 6px rgba(0,0,0,0.25);
-      border-radius:6px;
-      background:white;
-      display:block;
     }
 
-    /* RESPONSIVE: reduce tamaño de celdas y de imágenes */
-    @media (max-width: 768px){
-      header{ padding:48px 12px; }
-      header h1{ font-size:1.6rem; }
-      header p{ font-size:1rem; }
-      .motif{ grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); grid-auto-rows: 80px; }
-      .motif img{ width:60%; }
-      .title-box{ padding:10px 14px; }
-      .btn{ width: 80%; font-size: 0.95rem; padding:0.5rem; }
-      canvas{ max-width:100%; }
+    canvas {
+      display: block;
+      margin: auto;
+      max-width: 95%;
+      height: auto;
+      box-shadow: 0 0 6px rgba(0,0,0,0.3);
+      border-radius: 6px;
+      background: white;
+    }
+
+    /* ===== RESPONSIVIDAD ===== */
+    @media (max-width: 768px) {
+      header { height: 160px; }
+
+      .title-box { padding: 12px 15px; }
+      .title-box h1 { font-size: 1.4rem; }
+      .title-box p { font-size: 0.85rem; }
+
+      #controls { flex-direction: column; gap: 0.6rem; }
+      .btn { width: 80%; font-size: 0.9rem; padding: 0.5rem; }
+      #page-info { font-size: 0.9rem; }
+      canvas { max-width: 100%; }
     }
   </style>
 </head>
 <body>
 
-  <header aria-label="Encabezado decorado">
-    <!-- motif sera llenado por JS para generar el mosaico -->
-    <div class="motif" aria-hidden="true"></div>
+  <!-- HEADER con mosaico dinámico -->
+  <header>
+    <div class="mosaic"></div>
 
-    <!-- caja del titulo (mejor legibilidad) -->
-    <div class="title-box" role="banner">
+    <div class="title-box">
       <h1>Carta del Restaurante</h1>
       <p>ITARTAROS</p>
     </div>
   </header>
 
-  <!-- controles de navegación -->
-  <div id="controls" aria-label="Controles de la carta">
+  <!-- Controles -->
+  <div id="controls">
     <button id="prev" class="btn btn-prev">⬅ Página anterior</button>
     <span id="page-info">Página 1 de ?</span>
     <button id="next" class="btn btn-next">Página siguiente ➡</button>
   </div>
 
-  <!-- viewer -->
-  <div id="pdf-viewer" aria-live="polite"></div>
+  <!-- PDF Viewer -->
+  <div id="pdf-viewer"></div>
 
-  <!-- JS: genera el mosaico y controla PDF.js -->
+  <!-- PDF.js -->
   <script type="module">
-    /**********************************************************************
-     * 1) Motif generator (distribuye las 6 ilustraciones en un grid que
-     *    llena el header). Usa las imágenes en /img/ (relativo a index.html)
-     **********************************************************************/
-    document.addEventListener('DOMContentLoaded', () => {
-      const motif = document.querySelector('.motif');
-      const header = document.querySelector('header');
-
-      // nombres de archivos (colócalos en img/)
-      const icons = [
-        'img/pasta.svg',
-        'img/pizza.svg',
-        'img/wine.svg',
-        'img/tomato.svg',
-        'img/queso.svg',
-        'img/aceitunas.svg'
-      ];
-
-      // genera el mosaico según tamaño del header
-      function buildMotif() {
-        // limpiar
-        motif.innerHTML = '';
-
-        // tamaño de celda (coherente con CSS); ajusta si quieres mayor/menor densidad
-        const cellSize = (window.innerWidth <= 768) ? 80 : 120;
-        const cols = Math.ceil(header.clientWidth / cellSize);
-        const rows = Math.ceil(header.clientHeight / cellSize);
-        const total = cols * rows;
-
-        // fijar columnas/filas en CSS grid dinámicamente
-        motif.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
-        motif.style.gridAutoRows = `${cellSize}px`;
-
-        // crear fragment para añadir elementos
-        const frag = document.createDocumentFragment();
-
-        for (let i = 0; i < total; i++) {
-          const img = document.createElement('img');
-          // seleccionar icono en secuencia (rotación para variedad)
-          const src = icons[i % icons.length];
-          img.src = src;
-          img.alt = '';
-          // ligera variación de rotación y escala para evitar monotonía
-          const rot = (Math.random() * 40) - 20; // -20deg .. +20deg
-          const scale = 0.9 + (Math.random() * 0.3); // 0.9 .. 1.2
-          img.style.transform = `rotate(${rot}deg) scale(${scale})`;
-          // pequeño efecto hover en desktop
-          img.addEventListener('mouseenter', () => img.style.transform = `scale(${Math.min(1.18, scale+0.12)}) rotate(${rot}deg)`);
-          img.addEventListener('mouseleave', () => img.style.transform = `rotate(${rot}deg) scale(${scale})`);
-          frag.appendChild(img);
-        }
-
-        motif.appendChild(frag);
-      }
-
-      // build on load and on resize (debounced)
-      buildMotif();
-      let rt;
-      window.addEventListener('resize', () => {
-        clearTimeout(rt);
-        rt = setTimeout(buildMotif, 180);
-      });
-    });
-
-    /**********************************************************************
-     * 2) PDF.js viewer (navegación, render y accesibilidad)
-     *    Asegúrate de tener ./pdfjs/pdf.mjs y ./pdfjs/pdf.worker.mjs
-     **********************************************************************/
     import * as pdfjsLib from "./pdfjs/pdf.mjs";
     pdfjsLib.GlobalWorkerOptions.workerSrc = "./pdfjs/pdf.worker.mjs";
 
@@ -244,87 +180,93 @@
 
     let pdfDoc = null;
     let currentPage = 1;
-    let isRendering = false;
-    let pendingPage = null;
 
     function renderPage(num) {
-      isRendering = true;
-      pdfDoc.getPage(num).then(page => {
+      pdfDoc.getPage(num).then(function(page) {
         const isMobile = window.innerWidth <= 768;
-        const desiredWidth = Math.min(window.innerWidth * 0.95, 1000);
-        const vpUnscaled = page.getViewport({ scale: 1 });
-        const scale = (desiredWidth / vpUnscaled.width) * (isMobile ? 0.95 : 1.0);
+        const scale = isMobile ? 0.9 : 1.3;
         const viewport = page.getViewport({ scale });
 
         viewer.innerHTML = "";
         const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = Math.floor(viewport.width);
-        canvas.height = Math.floor(viewport.height);
-        canvas.setAttribute("role", "img");
-        canvas.setAttribute("aria-label", `Página ${num} de la carta`);
+        const context = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
         viewer.appendChild(canvas);
 
-        const renderTask = page.render({ canvasContext: ctx, viewport });
-        renderTask.promise.then(() => {
-          isRendering = false;
-          if (pendingPage !== null) {
-            renderPage(pendingPage);
-            pendingPage = null;
-          }
-        });
-      });
+        const renderContext = { canvasContext: context, viewport: viewport };
+        page.render(renderContext);
 
-      pageInfo.textContent = `Página ${num} de ${pdfDoc?.numPages ?? '?'}`;
+        pageInfo.textContent = `Página ${num} de ${pdfDoc.numPages}`;
+      });
     }
 
-    function queueRenderPage(num) {
-      if (isRendering) {
-        pendingPage = num;
-      } else {
-        renderPage(num);
+    prevBtn.addEventListener("click", () => {
+      if (currentPage <= 1) return;
+      currentPage--;
+      renderPage(currentPage);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentPage >= pdfDoc.numPages) return;
+      currentPage++;
+      renderPage(currentPage);
+    });
+
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+      pdfDoc = pdf;
+      renderPage(currentPage);
+    });
+
+    window.addEventListener("resize", () => renderPage(currentPage));
+
+    // ===== Generar mosaico dinámico sin repetición consecutiva =====
+    const mosaic = document.querySelector(".mosaic");
+    const images = [
+      "img/queso.svg",
+      "img/aceitunas.svg",
+      "img/pan.svg",
+      "img/pizza.svg",
+      "img/pasta.svg",
+      "img/tomato.svg",
+      "img/wine.svg"
+    ];
+
+    function generateMosaic() {
+      mosaic.innerHTML = "";
+      const headerHeight = document.querySelector("header").offsetHeight;
+      const cellSize = 50 + 4; // tamaño celda + gap
+      const columns = Math.floor(window.innerWidth / cellSize);
+      const rows = Math.ceil(headerHeight / cellSize);
+
+      let lastImg = null; // evita repetición consecutiva
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+          let imgSrc;
+          do {
+            imgSrc = images[Math.floor(Math.random() * images.length)];
+          } while (imgSrc === lastImg);
+
+          const img = document.createElement("img");
+          img.src = imgSrc;
+          img.style.transform = `rotate(${Math.random() * 30 - 15}deg)`;
+          mosaic.appendChild(img);
+
+          lastImg = imgSrc;
+        }
       }
     }
 
-    prevBtn.addEventListener('click', () => {
-      if (!pdfDoc) return;
-      if (currentPage <= 1) return;
-      currentPage--;
-      queueRenderPage(currentPage);
-    });
-    nextBtn.addEventListener('click', () => {
-      if (!pdfDoc) return;
-      if (currentPage >= pdfDoc.numPages) return;
-      currentPage++;
-      queueRenderPage(currentPage);
-    });
+    generateMosaic();
+    window.addEventListener("resize", generateMosaic);
 
-    // load pdf
-    pdfjsLib.getDocument(url).promise.then(pdf => {
-      pdfDoc = pdf;
-      renderPage(currentPage);
-    }).catch(err => {
-      console.error('Error al cargar PDF:', err);
-      viewer.innerHTML = "<p style='padding:1rem;color:#900;'>Error: no se pudo cargar la carta. Revisa la ruta del PDF.</p>";
-    });
-
-    // resize -> re-render (debounce)
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        if (pdfDoc) queueRenderPage(currentPage);
-      }, 180);
-    });
-
-    // teclado
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') prevBtn.click();
-      if (e.key === 'ArrowRight') nextBtn.click();
-    });
   </script>
+
 </body>
 </html>
+
+
 
 
 
