@@ -1,137 +1,239 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="Mesa de trabajo 1.png" type="image/png">
-  <title>ITARTAROS</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ITARTAROS - Carta</title>
+    <link rel="icon" href="Mesa de trabajo 1.png" type="image/png">
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f7f7;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    :root{
+      --header-bg-1: #fffaf3;
+      --header-bg-2: #f5e9d6;
+      --title-color: #2c2c2c;
+      --accent: #a32a29;
     }
-    header {
-      background: linear-gradient(to right, #009246 33.3%, #ffffff 33.3% 66.6%, #ce2b37 66.6%);
-      color: black;
-      text-align: center;
-      width: 100%;
-      padding: 1rem;
-      font-size: 1.4rem;
-      font-weight: bold;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background:#f7f7f7;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      color:#222;
+    }
+
+    /* ===== HEADER ===== */
+    header{
+      position:relative;
+      width:100%;
+      text-align:center;
+      padding: 70px 16px;
+      overflow:hidden;
+      background: linear-gradient(180deg, var(--header-bg-1), var(--header-bg-2));
       border-bottom: 2px solid #ddd;
     }
-    header h1 {
-      font-family: 'Times New Roman', Times, serif;
-      margin: 0;
-    }
 
-    /* Controles de navegación */
-    #controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
+    /* capa que contendrá el mosaico generado por JS */
+    .motif{
+      position:absolute;
+      inset:0;
+      display:grid;
+      grid-auto-rows: 120px;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0;
+      z-index:1;
+      pointer-events: none;
+      /* INICIAL opacidad moderada; las imágenes individuales serán vívidas */
+      opacity: 0.85;
     }
-    .btn {
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
-    .btn-prev {
-      background-color: #009246; /* Verde Italia */
-      color: white;
-    }
-    .btn-prev:hover {
-      background-color: #006f33;
-    }
-    .btn-next {
-      background-color: #ce2b37; /* Rojo Italia */
-      color: white;
-    }
-    .btn-next:hover {
-      background-color: #a8232a;
-    }
-    #page-info {
-      font-weight: bold;
-      color: #333;
-    }
-
-    /* Contenedor del PDF */
-    #pdf-viewer {
-      width: 100%;
+    .motif img{
+      width: 70%;
       height: auto;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      overflow-y: auto;
-      background: #e0e0e0;
-      padding: 1rem 0;
-    }
-    canvas {
-      display: block;
       margin: auto;
-      max-width: 95%;
-      height: auto;
-      box-shadow: 0 0 6px rgba(0,0,0,0.3);
-      border-radius: 6px;
-      background: white;
+      display:block;
+      opacity: 1; /* full color */
+      transition: transform 250ms ease;
+      will-change: transform;
     }
 
-    /* Responsividad */
-    @media (max-width: 768px) {
-      header {
-        font-size: 1.1rem;
-        padding: 0.8rem;
-      }
-      #controls {
-        flex-direction: column;
-        gap: 0.6rem;
-      }
-      .btn {
-        width: 80%;
-        font-size: 0.9rem;
-        padding: 0.5rem;
-      }
-      #page-info {
-        font-size: 0.9rem;
-      }
-      canvas {
-        max-width: 100%;
-      }
+    /* Capa para asegurar legibilidad del texto (solo detrás del texto) */
+    .title-box{
+      position:relative;
+      z-index: 3;
+      display:inline-block;
+      background: rgba(255,255,255,0.92); /* casi blanco, pero permite ver el motivo */
+      padding: 12px 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+
+    header h1{
+      margin:0;
+      font-family: "Cinzel", serif;
+      font-size: 4rem;
+      color: var(--title-color);
+    }
+    header p{
+      margin:8px 0 0;
+      font-family: "Cinzel", serif;
+      font-size: 3rem;
+      color: var(--accent);
+      position: relative;
+      z-index: 3;
+    }
+
+    /* controls & pdf */
+    #controls{
+      margin: 18px 0;
+      display:flex;
+      gap:1rem;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      z-index: 4;
+    }
+    .btn{
+      padding:0.6rem 1rem;
+      border-radius:8px;
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .btn-prev{ background:#009246; color:#fff; }
+    .btn-prev:hover{ background:#006f33; }
+    .btn-next{ background:#ce2b37; color:#fff; }
+    .btn-next:hover{ background:#a8232a; }
+    #page-info{ font-weight:700; color:#333; }
+
+    #pdf-viewer{
+      width:100%;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding: 1rem 0;
+      background:#e0e0e0;
+    }
+    canvas{
+      max-width:95%;
+      height:auto;
+      box-shadow:0 0 6px rgba(0,0,0,0.25);
+      border-radius:6px;
+      background:white;
+      display:block;
+    }
+
+    /* RESPONSIVE: reduce tamaño de celdas y de imágenes */
+    @media (max-width: 768px){
+      header{ padding:48px 12px; }
+      header h1{ font-size:1.6rem; }
+      header p{ font-size:1rem; }
+      .motif{ grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); grid-auto-rows: 80px; }
+      .motif img{ width:60%; }
+      .title-box{ padding:10px 14px; }
+      .btn{ width: 80%; font-size: 0.95rem; padding:0.5rem; }
+      canvas{ max-width:100%; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Carta del Restaurante</h1>
+
+  <header aria-label="Encabezado decorado">
+    <!-- motif sera llenado por JS para generar el mosaico -->
+    <div class="motif" aria-hidden="true"></div>
+
+    <!-- caja del titulo (mejor legibilidad) -->
+    <div class="title-box" role="banner">
+      <h1>Carta del Restaurante</h1>
+      <p>ITARTAROS</p>
+    </div>
   </header>
 
-  <!-- Controles de navegación -->
-  <div id="controls">
+  <!-- controles de navegación -->
+  <div id="controls" aria-label="Controles de la carta">
     <button id="prev" class="btn btn-prev">⬅ Página anterior</button>
     <span id="page-info">Página 1 de ?</span>
     <button id="next" class="btn btn-next">Página siguiente ➡</button>
   </div>
 
-  <!-- Aquí se renderizará el PDF -->
-  <div id="pdf-viewer"></div>
+  <!-- viewer -->
+  <div id="pdf-viewer" aria-live="polite"></div>
 
-  <!-- PDF.js como módulo -->
+  <!-- JS: genera el mosaico y controla PDF.js -->
   <script type="module">
-    import * as pdfjsLib from "./pdfjs/pdf.mjs";
+    /**********************************************************************
+     * 1) Motif generator (distribuye las 6 ilustraciones en un grid que
+     *    llena el header). Usa las imágenes en /img/ (relativo a index.html)
+     **********************************************************************/
+    document.addEventListener('DOMContentLoaded', () => {
+      const motif = document.querySelector('.motif');
+      const header = document.querySelector('header');
 
-    // Configurar el worker
+      // nombres de archivos (colócalos en img/)
+      const icons = [
+        'img/pasta.svg',
+        'img/pizza.svg',
+        'img/wine.svg',
+        'img/tomato.svg',
+        'img/queso.svg',
+        'img/aceitunas.svg'
+      ];
+
+      // genera el mosaico según tamaño del header
+      function buildMotif() {
+        // limpiar
+        motif.innerHTML = '';
+
+        // tamaño de celda (coherente con CSS); ajusta si quieres mayor/menor densidad
+        const cellSize = (window.innerWidth <= 768) ? 80 : 120;
+        const cols = Math.ceil(header.clientWidth / cellSize);
+        const rows = Math.ceil(header.clientHeight / cellSize);
+        const total = cols * rows;
+
+        // fijar columnas/filas en CSS grid dinámicamente
+        motif.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`;
+        motif.style.gridAutoRows = `${cellSize}px`;
+
+        // crear fragment para añadir elementos
+        const frag = document.createDocumentFragment();
+
+        for (let i = 0; i < total; i++) {
+          const img = document.createElement('img');
+          // seleccionar icono en secuencia (rotación para variedad)
+          const src = icons[i % icons.length];
+          img.src = src;
+          img.alt = '';
+          // ligera variación de rotación y escala para evitar monotonía
+          const rot = (Math.random() * 40) - 20; // -20deg .. +20deg
+          const scale = 0.9 + (Math.random() * 0.3); // 0.9 .. 1.2
+          img.style.transform = `rotate(${rot}deg) scale(${scale})`;
+          // pequeño efecto hover en desktop
+          img.addEventListener('mouseenter', () => img.style.transform = `scale(${Math.min(1.18, scale+0.12)}) rotate(${rot}deg)`);
+          img.addEventListener('mouseleave', () => img.style.transform = `rotate(${rot}deg) scale(${scale})`);
+          frag.appendChild(img);
+        }
+
+        motif.appendChild(frag);
+      }
+
+      // build on load and on resize (debounced)
+      buildMotif();
+      let rt;
+      window.addEventListener('resize', () => {
+        clearTimeout(rt);
+        rt = setTimeout(buildMotif, 180);
+      });
+    });
+
+    /**********************************************************************
+     * 2) PDF.js viewer (navegación, render y accesibilidad)
+     *    Asegúrate de tener ./pdfjs/pdf.mjs y ./pdfjs/pdf.worker.mjs
+     **********************************************************************/
+    import * as pdfjsLib from "./pdfjs/pdf.mjs";
     pdfjsLib.GlobalWorkerOptions.workerSrc = "./pdfjs/pdf.worker.mjs";
 
     const url = "Cartas%20Final%202025%20itartaros%20122025%20-1.pdf";
@@ -142,58 +244,89 @@
 
     let pdfDoc = null;
     let currentPage = 1;
+    let isRendering = false;
+    let pendingPage = null;
 
-    // Renderizar una página
     function renderPage(num) {
-      pdfDoc.getPage(num).then(function(page) {
-        // Escala adaptativa: más pequeña en móviles
+      isRendering = true;
+      pdfDoc.getPage(num).then(page => {
         const isMobile = window.innerWidth <= 768;
-        const scale = isMobile ? 0.9 : 1.3;
+        const desiredWidth = Math.min(window.innerWidth * 0.95, 1000);
+        const vpUnscaled = page.getViewport({ scale: 1 });
+        const scale = (desiredWidth / vpUnscaled.width) * (isMobile ? 0.95 : 1.0);
         const viewport = page.getViewport({ scale });
 
-        viewer.innerHTML = ""; // Limpiar antes de renderizar
-
+        viewer.innerHTML = "";
         const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
+        const ctx = canvas.getContext("2d");
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        canvas.setAttribute("role", "img");
+        canvas.setAttribute("aria-label", `Página ${num} de la carta`);
         viewer.appendChild(canvas);
 
-        const renderContext = {
-          canvasContext: context,
-          viewport: viewport
-        };
-        page.render(renderContext);
-
-        pageInfo.textContent = `Página ${num} de ${pdfDoc.numPages}`;
+        const renderTask = page.render({ canvasContext: ctx, viewport });
+        renderTask.promise.then(() => {
+          isRendering = false;
+          if (pendingPage !== null) {
+            renderPage(pendingPage);
+            pendingPage = null;
+          }
+        });
       });
+
+      pageInfo.textContent = `Página ${num} de ${pdfDoc?.numPages ?? '?'}`;
     }
 
-    // Manejo de botones
-    prevBtn.addEventListener("click", () => {
+    function queueRenderPage(num) {
+      if (isRendering) {
+        pendingPage = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (!pdfDoc) return;
       if (currentPage <= 1) return;
       currentPage--;
-      renderPage(currentPage);
+      queueRenderPage(currentPage);
     });
-
-    nextBtn.addEventListener("click", () => {
+    nextBtn.addEventListener('click', () => {
+      if (!pdfDoc) return;
       if (currentPage >= pdfDoc.numPages) return;
       currentPage++;
-      renderPage(currentPage);
+      queueRenderPage(currentPage);
     });
 
-    // Cargar el documento
-    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+    // load pdf
+    pdfjsLib.getDocument(url).promise.then(pdf => {
       pdfDoc = pdf;
       renderPage(currentPage);
+    }).catch(err => {
+      console.error('Error al cargar PDF:', err);
+      viewer.innerHTML = "<p style='padding:1rem;color:#900;'>Error: no se pudo cargar la carta. Revisa la ruta del PDF.</p>";
     });
 
-    // Re-renderizar al redimensionar pantalla
-    window.addEventListener("resize", () => renderPage(currentPage));
+    // resize -> re-render (debounce)
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (pdfDoc) queueRenderPage(currentPage);
+      }, 180);
+    });
+
+    // teclado
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    });
   </script>
 </body>
 </html>
+
+
 
 
 
